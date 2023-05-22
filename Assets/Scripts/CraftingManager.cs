@@ -5,6 +5,7 @@ using UnityEngine;
 public class CraftingManager : MonoBehaviour
 {
     public Row[] rows;
+    //replace with gamemanager reference
     public GameObject itemPrefab;
     public ItemData[] datas;
 
@@ -19,7 +20,7 @@ public class CraftingManager : MonoBehaviour
         {
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
-                SpawnNewItem(datas[1], rows[i].cells[j]);
+                SpawnNewItem(datas[i], rows[i].cells[j]);
             }
         }
 

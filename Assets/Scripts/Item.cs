@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     [Header("UI")]
     public Image image;
@@ -20,6 +20,8 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         itemData = newItemData;
         image.sprite = newItemData.image;
         RefreshCount();
+        image.raycastTarget = false;
+        countText.raycastTarget = false;
     }
 
     public void RefreshCount()
@@ -33,9 +35,19 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         countText.text = count.ToString();
     }
 
+    public void SetCount(int newCount)
+    {
+        if (newCount < 1) return;
+
+        count = newCount;
+        RefreshCount();
+    }
+
     public void Stack(Item other) 
     {
-        if (itemData.type == ItemData.ItemType.NonStackable || other.count <= 0)
+        if (itemData.type == ItemData.ItemType.NonStackable || 
+            count >= itemData.stackableLimit ||
+            other.count <= 0)
             return;
 
         if (count + other.count > itemData.stackableLimit)
@@ -71,5 +83,13 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         image.raycastTarget = true;
         countText.raycastTarget = true;
         transform.SetParent(parentAfterDrag);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left)
+            Debug.Log("item left click");
+        else if (eventData.button == PointerEventData.InputButton.Right)
+            Debug.Log("item right click");
     }
 }
