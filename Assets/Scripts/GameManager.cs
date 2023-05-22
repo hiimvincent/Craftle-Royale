@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     public Canvas canvas;
     public GameObject itemPrefab;
+    public ItemData[] datas;
 
     public Item curItem = null;
 

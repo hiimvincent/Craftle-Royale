@@ -5,9 +5,6 @@ using UnityEngine;
 public class CraftingManager : MonoBehaviour
 {
     public Row[] rows;
-    //replace with gamemanager reference
-    public GameObject itemPrefab;
-    public ItemData[] datas;
 
     private void Awake()
     {
@@ -16,21 +13,35 @@ public class CraftingManager : MonoBehaviour
 
     void Start()
     {
+        GameManager gm = GameManager.GameManagerInstance;
         for (int i = 0; i < rows.Length; i++)
         {
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
-                SpawnNewItem(datas[i], rows[i].cells[j]);
+                SpawnNewItem(gm.datas[i], rows[i].cells[j]);
             }
         }
-
     }
 
     void SpawnNewItem(ItemData itemData, Cell cell)
     {
-        GameObject newItemGO = Instantiate(itemPrefab, cell.transform);
+        GameObject newItemGO = Instantiate(GameManager.GameManagerInstance.itemPrefab, cell.transform);
         Item newItem = newItemGO.GetComponent<Item>();
         newItem.InitializeItem(itemData);
+    }
+
+    public Cell findAvailableCell(int id)
+    {
+        foreach (Row r in rows)
+        {
+            foreach (Cell cur in r.cells)
+            {
+                if (cur.item == null || cur.item.itemData.id == id)
+                    return cur;
+            }
+        }
+
+        return null;
     }
 
 }

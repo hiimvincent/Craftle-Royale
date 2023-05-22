@@ -3,26 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Cell : MonoBehaviour, IDropHandler, IPointerClickHandler
+public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
 {
     public GameManager gameManager;
+    public bool isInventory = true;
+    public Item item;
 
-    public void OnDrop(PointerEventData eventData)
+    private void AddItem(Item addedItem)
     {
-        GameObject dropped = eventData.pointerDrag;
-        Item item = dropped.GetComponent<Item>();
+        addedItem.transform.SetParent(transform);
+        addedItem.transform.SetAsLastSibling();
+        item = addedItem;
+    }
 
-        if (transform.childCount == 0)
-        {
-            item.parentAfterDrag = transform;
-            return;
-        }
+    private void RemoveItem()
+    {
+        transform.DetachChildren();
+        item = null;
+    }
 
-        Item cur = GetComponentInChildren<Item>();
-        if (cur != null && cur.itemData.id == item.itemData.id)
-        {
-            cur.Stack(item);
-        }
+    private Item CreateItem(ItemData data, Transform t)
+    {
+        GameObject newItemGO = Instantiate(gameManager.itemPrefab, t);
+        Item newItem = newItemGO.GetComponent<Item>();
+        newItem.InitializeItem(data);
+        return newItem;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -38,8 +43,7 @@ public class Cell : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             if (cellCur == null)
             {
-                gameManager.curItem.transform.SetParent(transform);
-                gameManager.curItem.transform.SetAsLastSibling();
+                AddItem(gameManager.curItem);
                 gameManager.curItem = null;
                 return;
             }
@@ -51,13 +55,12 @@ public class Cell : MonoBehaviour, IDropHandler, IPointerClickHandler
             }
 
             gameManager.curItem = cellCur;
-            transform.DetachChildren();
+            RemoveItem();
             gameManager.curItem.transform.SetParent(gameManager.canvas.transform);
 
             if (oldCur != null)
             {
-                oldCur.transform.SetParent(transform);
-                oldCur.transform.SetAsLastSibling();
+                AddItem(oldCur);
             }
 
             return;
@@ -68,16 +71,13 @@ public class Cell : MonoBehaviour, IDropHandler, IPointerClickHandler
             {
                 if (oldCur.count == 1)
                 {
-                    gameManager.curItem.transform.SetParent(transform);
-                    gameManager.curItem.transform.SetAsLastSibling();
+                    AddItem(gameManager.curItem);
                     gameManager.curItem = null;
                     return;
                 }
                 else
                 {
-                    GameObject newItemGO = Instantiate(gameManager.curItem.gameObject, transform);
-                    Item newItem = newItemGO.GetComponent<Item>();
-                    newItem.InitializeItem(gameManager.curItem.itemData);
+                    Item newItem = CreateItem(gameManager.curItem.itemData, transform);
                     newItem.SetCount(1);
                     gameManager.curItem.SetCount(gameManager.curItem.count - 1);
                     return;
@@ -89,18 +89,14 @@ public class Cell : MonoBehaviour, IDropHandler, IPointerClickHandler
                 if (cellCur.count == 1)
                 {
                     gameManager.curItem = cellCur;
-                    transform.DetachChildren();
+                    RemoveItem();
                     gameManager.curItem.transform.SetParent(gameManager.canvas.transform);
                     return;
                 }
                 else
                 {
                     int half = (int)Mathf.Ceil(cellCur.count / 2.0f);
-
-                    GameObject newItemGO = Instantiate(gameManager.itemPrefab, gameManager.canvas.transform);
-                    Item newItem = newItemGO.GetComponent<Item>();
-
-                    newItem.InitializeItem(cellCur.itemData);
+                    Item newItem = CreateItem(cellCur.itemData, gameManager.canvas.transform);
                     newItem.SetCount(half);
                     gameManager.curItem = newItem;
                     cellCur.SetCount(cellCur.count - half);
@@ -126,13 +122,18 @@ public class Cell : MonoBehaviour, IDropHandler, IPointerClickHandler
             }
 
             gameManager.curItem = cellCur;
-            transform.DetachChildren();
+            RemoveItem();
             gameManager.curItem.transform.SetParent(gameManager.canvas.transform);
-
-            oldCur.transform.SetParent(transform);
-            oldCur.transform.SetAsLastSibling();
+            AddItem(oldCur);
 
             return;
         }
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (GameManager.GameManagerInstance.curItem != null) return;
+
+        OnPointerClick(eventData);
     }
 }
