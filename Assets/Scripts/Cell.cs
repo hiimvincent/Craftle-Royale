@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
 {
-    public GameManager gameManager;
     public bool isInventory = true;
     public Item item;
+    public Vector2 pos;
 
     private void AddItem(Item addedItem)
     {
@@ -16,7 +16,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
         item = addedItem;
     }
 
-    private void RemoveItem()
+    public void RemoveItem()
     {
         transform.DetachChildren();
         item = null;
@@ -24,18 +24,32 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
 
     private Item CreateItem(ItemData data, Transform t)
     {
-        GameObject newItemGO = Instantiate(gameManager.itemPrefab, t);
+        GameObject newItemGO = Instantiate(GameManager.GameManagerInstance.itemPrefab, t);
         Item newItem = newItemGO.GetComponent<Item>();
         newItem.InitializeItem(data);
         return newItem;
     }
 
+    public bool SpawnItem(ItemData data, Transform t)
+    {
+        if (item != null) return false;
+
+        AddItem(CreateItem(data, t));
+        return true;
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        gameManager = GameManager.GameManagerInstance;
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            OnShiftClick(eventData);
+            return;
+        }
 
-        Item cellCur = GetComponentInChildren<Item>();
-        Item oldCur = gameManager.curItem;
+        GameManager gm = GameManager.GameManagerInstance;
+
+        Item cellCur = item;
+        Item oldCur = gm.curItem;
 
         if (oldCur == null && cellCur == null) return;
 
@@ -43,20 +57,21 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
         {
             if (cellCur == null)
             {
-                AddItem(gameManager.curItem);
-                gameManager.curItem = null;
+                AddItem(gm.curItem);
+                gm.curItem = null;
                 return;
             }
 
-            if (gameManager.curItem != null && cellCur.itemData.id == oldCur.itemData.id)
+            if (gm.curItem != null && cellCur.itemData.id == oldCur.itemData.id)
             {
-                cellCur.Stack(gameManager.curItem);
+                if (cellCur.Stack(gm.curItem, fromCanvas: true))
+                    gm.curItem = null;
                 return;
             }
 
-            gameManager.curItem = cellCur;
+            gm.curItem = cellCur;
             RemoveItem();
-            gameManager.curItem.transform.SetParent(gameManager.canvas.transform);
+            gm.curItem.transform.SetParent(gm.canvas.transform);
 
             if (oldCur != null)
             {
@@ -71,15 +86,15 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
             {
                 if (oldCur.count == 1)
                 {
-                    AddItem(gameManager.curItem);
-                    gameManager.curItem = null;
+                    AddItem(gm.curItem);
+                    gm.curItem = null;
                     return;
                 }
                 else
                 {
-                    Item newItem = CreateItem(gameManager.curItem.itemData, transform);
-                    newItem.SetCount(1);
-                    gameManager.curItem.SetCount(gameManager.curItem.count - 1);
+                    SpawnItem(gm.curItem.itemData, transform);
+                    item.SetCount(1);
+                    gm.curItem.SetCount(gm.curItem.count - 1);
                     return;
                 }
             }
@@ -88,42 +103,43 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
             {
                 if (cellCur.count == 1)
                 {
-                    gameManager.curItem = cellCur;
+                    gm.curItem = cellCur;
                     RemoveItem();
-                    gameManager.curItem.transform.SetParent(gameManager.canvas.transform);
+                    gm.curItem.transform.SetParent(gm.canvas.transform);
                     return;
                 }
                 else
                 {
                     int half = (int)Mathf.Ceil(cellCur.count / 2.0f);
-                    Item newItem = CreateItem(cellCur.itemData, gameManager.canvas.transform);
+                    Item newItem = CreateItem(cellCur.itemData, gm.canvas.transform);
                     newItem.SetCount(half);
-                    gameManager.curItem = newItem;
+                    gm.curItem = newItem;
                     cellCur.SetCount(cellCur.count - half);
                     return;
                 }
             }
 
-            if (cellCur.itemData.id == gameManager.curItem.itemData.id)
+            if (cellCur.itemData.id == gm.curItem.itemData.id)
             {
                 if (cellCur.count >= cellCur.itemData.stackableLimit) return;
 
-                if (gameManager.curItem.count == 1)
+                if (gm.curItem.count == 1)
                 {
-                    cellCur.Stack(gameManager.curItem);
+                    if (cellCur.Stack(gm.curItem, fromCanvas: true))
+                        gm.curItem = null;
                     return;
                 }
                 else
                 {
                     cellCur.SetCount(cellCur.count + 1);
-                    gameManager.curItem.SetCount(gameManager.curItem.count - 1);
+                    gm.curItem.SetCount(gm.curItem.count - 1);
                     return;
                 }
             }
 
-            gameManager.curItem = cellCur;
+            gm.curItem = cellCur;
             RemoveItem();
-            gameManager.curItem.transform.SetParent(gameManager.canvas.transform);
+            gm.curItem.transform.SetParent(gm.canvas.transform);
             AddItem(oldCur);
 
             return;
@@ -135,5 +151,73 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
         if (GameManager.GameManagerInstance.curItem != null) return;
 
         OnPointerClick(eventData);
+    }
+
+    public void OnShiftClick(PointerEventData eventData)
+    {
+        if (item == null) return;
+
+        GameManager gm = GameManager.GameManagerInstance;
+
+        if (isInventory)
+        {
+            Row[] craftRows = gm.cm.rows;
+            if (AttemptPlaceItem(craftRows)) return;
+        }
+
+        Row[] invRows = gm.im.rows;
+        AttemptPlaceItem(invRows);
+    }
+
+    public bool AttemptPlaceItem(Row[] rows)
+    {
+        Item cellCur = item;
+
+        if (AttemptStackItem(rows)) return true;
+
+        for (int rIndex = 0; rIndex < rows.Length; rIndex++)
+        {
+            for (int cIndex = 0; cIndex < rows[rIndex].cells.Length; cIndex++)
+            {
+                Cell cur = rows[rIndex].cells[cIndex];
+
+                if (rIndex == pos.x && cIndex == pos.y && isInventory == cur.isInventory)
+                    return true;
+
+                if (cur.item == null)
+                {
+                    RemoveItem();
+                    cur.AddItem(cellCur);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private bool AttemptStackItem(Row[] rows)
+    {
+        Item cellCur = item;
+
+        for (int rIndex = 0; rIndex < rows.Length; rIndex++)
+        {
+            for (int cIndex = 0; cIndex < rows[rIndex].cells.Length; cIndex++)
+            {
+                Cell cur = rows[rIndex].cells[cIndex];
+
+                if (rIndex == pos.x && cIndex == pos.y && isInventory == cur.isInventory)
+                    return false;
+
+                if (cur.item == null || cur.item.itemData.id != cellCur.itemData.id) continue;
+
+                if (cellCur.itemData.type == ItemData.ItemType.NonStackable ||
+                    cur.item.count == cur.item.itemData.stackableLimit) continue;
+
+                if (cur.item.Stack(cellCur)) return true;
+            }
+        }
+
+        return false;
     }
 }

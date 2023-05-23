@@ -18,7 +18,8 @@ public class CraftingManager : MonoBehaviour
         {
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
-                SpawnNewItem(gm.datas[i], rows[i].cells[j]);
+                rows[i].cells[j].pos = new Vector2(i, j);
+                rows[i].cells[j].SpawnItem(gm.datas[i], rows[i].cells[j].transform);
             }
         }
     }

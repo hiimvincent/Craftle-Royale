@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     }
 
     public Canvas canvas;
+    public InventoryManager im;
+    public CraftingManager cm;
     public GameObject itemPrefab;
     public ItemData[] datas;
 
@@ -24,7 +26,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            DestroyImmediate(gameObject);
+            Destroy(gameObject);
         }
     }
 

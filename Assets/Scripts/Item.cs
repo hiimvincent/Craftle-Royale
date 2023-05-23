@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
+public class Item : MonoBehaviour
 {
     [Header("UI")]
     public Image image;
@@ -43,12 +43,12 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         RefreshCount();
     }
 
-    public void Stack(Item other) 
+    public bool Stack(Item other, bool fromCanvas = false) 
     {
         if (itemData.type == ItemData.ItemType.NonStackable || 
             count >= itemData.stackableLimit ||
             other.count <= 0)
-            return;
+            return false;
 
         if (count + other.count > itemData.stackableLimit)
         {
@@ -56,40 +56,19 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             RefreshCount();
             other.count = count + other.count - itemData.stackableLimit;
             other.RefreshCount();
-            return;
+            return false;
         }
 
         count += other.count;
         RefreshCount();
+
+        if (!fromCanvas)
+        {
+            Cell par = other.GetComponentInParent<Cell>();
+            par.RemoveItem();
+        }
+
         Destroy(other.gameObject);
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        image.raycastTarget = false;
-        countText.raycastTarget = false;
-        parentAfterDrag = transform.parent;
-        transform.SetParent(transform.root);
-        transform.SetAsLastSibling();
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        transform.position = Input.mousePosition;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        image.raycastTarget = true;
-        countText.raycastTarget = true;
-        transform.SetParent(parentAfterDrag);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Left)
-            Debug.Log("item left click");
-        else if (eventData.button == PointerEventData.InputButton.Right)
-            Debug.Log("item right click");
+        return true;
     }
 }

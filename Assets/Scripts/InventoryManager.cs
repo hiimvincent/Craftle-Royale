@@ -18,7 +18,8 @@ public class InventoryManager : MonoBehaviour
         {
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
-                SpawnNewItem(gm.datas[i], rows[i].cells[j]);
+                rows[i].cells[j].pos = new Vector2(i, j);
+                rows[i].cells[j].SpawnItem(gm.datas[i], rows[i].cells[j].transform);
             }
         }
     }
@@ -29,6 +30,7 @@ public class InventoryManager : MonoBehaviour
         GameObject newItemGO = Instantiate(GameManager.GameManagerInstance.itemPrefab, cell.transform);
         Item newItem = newItemGO.GetComponent<Item>();
         newItem.InitializeItem(itemData);
+        cell.item = newItem;
     }
 
     public Cell findAvailableCell(int id)

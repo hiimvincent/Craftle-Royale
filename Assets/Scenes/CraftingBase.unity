@@ -2320,6 +2320,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 131908491}
+  im: {fileID: 1662117410}
+  cm: {fileID: 602235612}
   itemPrefab: {fileID: 3785908741792439923, guid: 1bd6a5f628a04dd46912b7c87af10240, type: 3}
   datas:
   - {fileID: 11400000, guid: 877f4019700047644aacb28b86679a44, type: 2}
