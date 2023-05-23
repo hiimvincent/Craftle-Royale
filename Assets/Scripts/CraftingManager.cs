@@ -23,26 +23,4 @@ public class CraftingManager : MonoBehaviour
             }
         }
     }
-
-    void SpawnNewItem(ItemData itemData, Cell cell)
-    {
-        GameObject newItemGO = Instantiate(GameManager.GameManagerInstance.itemPrefab, cell.transform);
-        Item newItem = newItemGO.GetComponent<Item>();
-        newItem.InitializeItem(itemData);
-    }
-
-    public Cell findAvailableCell(int id)
-    {
-        foreach (Row r in rows)
-        {
-            foreach (Cell cur in r.cells)
-            {
-                if (cur.item == null || cur.item.itemData.id == id)
-                    return cur;
-            }
-        }
-
-        return null;
-    }
-
 }
