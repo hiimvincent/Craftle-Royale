@@ -22,19 +22,19 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
         item = null;
     }
 
-    private Item CreateItem(ItemData data, Transform t)
+    private Item CreateItem(ItemData data, int metadata, Transform t)
     {
         GameObject newItemGO = Instantiate(GameManager.GameManagerInstance.itemPrefab, t);
         Item newItem = newItemGO.GetComponent<Item>();
-        newItem.InitializeItem(data);
+        newItem.InitializeItem(data, metadata);
         return newItem;
     }
 
-    public bool SpawnItem(ItemData data, Transform t)
+    public bool SpawnItem(ItemData data, int metadata, Transform t)
     {
         if (item != null) return false;
 
-        AddItem(CreateItem(data, t));
+        AddItem(CreateItem(data, metadata, t));
         return true;
     }
 
@@ -64,7 +64,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 return;
             }
 
-            if (gm.curItem != null && cellCur.itemData.id == oldCur.itemData.id)
+            if (gm.curItem != null && cellCur.isSame(oldCur))
             {
                 if (cellCur.Stack(gm.curItem, fromCanvas: true))
                     gm.curItem = null;
@@ -94,7 +94,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 }
                 else
                 {
-                    SpawnItem(gm.curItem.itemData, transform);
+                    SpawnItem(gm.curItem.itemData, gm.curItem.metadata, transform);
                     item.SetCount(1);
                     gm.curItem.SetCount(gm.curItem.count - 1);
                     return;
@@ -113,7 +113,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 else
                 {
                     int half = (int)Mathf.Ceil(cellCur.count / 2.0f);
-                    Item newItem = CreateItem(cellCur.itemData, gm.canvas.transform);
+                    Item newItem = CreateItem(cellCur.itemData, cellCur.metadata, gm.canvas.transform);
                     newItem.SetCount(half);
                     gm.curItem = newItem;
                     cellCur.SetCount(cellCur.count - half);
@@ -121,7 +121,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 }
             }
 
-            if (cellCur.itemData.id == gm.curItem.itemData.id)
+            if (cellCur.isSame(gm.curItem))
             {
                 if (cellCur.count >= cellCur.itemData.stackableLimit) return;
 
@@ -210,8 +210,8 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
 
                 if (rIndex == pos.x && cIndex == pos.y && isInventory == cur.isInventory)
                     return false;
-
-                if (cur.item == null || cur.item.itemData.id != cellCur.itemData.id) continue;
+                
+                if (cur.item == null || !cur.item.isSame(cellCur)) continue;
 
                 if (cellCur.itemData.type == ItemData.ItemType.NonStackable ||
                     cur.item.count == cur.item.itemData.stackableLimit) continue;

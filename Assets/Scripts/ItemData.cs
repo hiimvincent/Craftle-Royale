@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Scriptable Object")]
+[CreateAssetMenu(menuName = "ItemData")]
 public class ItemData : ScriptableObject
 {
-    public Sprite image;
     public int id;
+    public string[] names;
+    public Sprite[] images;
     public ItemType type = ItemType.Stackable;
     public int stackableLimit = 64;
     

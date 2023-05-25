@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
+    public int metadata;
+
     [Header("UI")]
     public Image image;
     public TextMeshProUGUI countText;
@@ -15,13 +17,19 @@ public class Item : MonoBehaviour
     [HideInInspector] public Transform parentAfterDrag;
     [HideInInspector] public int count = 1;
 
-    public void InitializeItem(ItemData newItemData)
+    public void InitializeItem(ItemData newItemData, int metadata = 0)
     {
         itemData = newItemData;
-        image.sprite = newItemData.image;
+        this.metadata = metadata;
+        image.sprite = newItemData.images[metadata];
         RefreshCount();
         image.raycastTarget = false;
         countText.raycastTarget = false;
+    }
+
+    public bool isSame(Item other)
+    {
+        return itemData.id == other.itemData.id && metadata == other.metadata;
     }
 
     public void RefreshCount()
@@ -45,6 +53,8 @@ public class Item : MonoBehaviour
 
     public bool Stack(Item other, bool fromCanvas = false) 
     {
+        if (!isSame(other)) return false;
+
         if (itemData.type == ItemData.ItemType.NonStackable || 
             count >= itemData.stackableLimit ||
             other.count <= 0)

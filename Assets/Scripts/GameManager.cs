@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public InventoryManager im;
     public CraftingManager cm;
     public GameObject itemPrefab;
-    public ItemData[] datas;
+    public BlockData dataList;
 
     public Item curItem = null;
 

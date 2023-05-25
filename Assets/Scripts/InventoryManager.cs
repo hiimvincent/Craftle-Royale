@@ -19,7 +19,7 @@ public class InventoryManager : MonoBehaviour
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
                 rows[i].cells[j].pos = new Vector2(i, j);
-                rows[i].cells[j].SpawnItem(gm.datas[i], rows[i].cells[j].transform);
+                rows[i].cells[j].SpawnItem(gm.dataList.data[1], i, rows[i].cells[j].transform);
             }
         }
     }
