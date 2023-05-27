@@ -42,12 +42,28 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
     {
         if (eventData.button == PointerEventData.InputButton.Middle) return;
 
+        GameManager gm = GameManager.GameManagerInstance;
+
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
             OnShiftClick(eventData);
+            if (!isInventory) gm.cm.OnGridChange();
             return;
         }
 
+        OnSimpleClick(eventData);
+        if (!isInventory) gm.cm.OnGridChange();
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (GameManager.GameManagerInstance.curItem != null) return;
+
+        OnPointerClick(eventData);
+    }
+
+    public void OnSimpleClick(PointerEventData eventData)
+    {
         GameManager gm = GameManager.GameManagerInstance;
 
         Item cellCur = item;
@@ -146,13 +162,6 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
 
             return;
         }
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (GameManager.GameManagerInstance.curItem != null) return;
-
-        OnPointerClick(eventData);
     }
 
     public void OnShiftClick(PointerEventData eventData)
