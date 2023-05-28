@@ -27,7 +27,7 @@ public class Item : MonoBehaviour
         countText.raycastTarget = false;
     }
 
-    public bool isSame(Item other)
+    public bool IsSame(Item other)
     {
         return itemData.id == other.itemData.id && metadata == other.metadata;
     }
@@ -51,9 +51,17 @@ public class Item : MonoBehaviour
         RefreshCount();
     }
 
+    public void AddCount(int addedCount)
+    {
+        if (count + addedCount < 1) return;
+
+        count += addedCount;
+        RefreshCount();
+    }
+
     public bool Stack(Item other, bool fromCanvas = false) 
     {
-        if (!isSame(other)) return false;
+        if (!IsSame(other)) return false;
 
         if (itemData.type == ItemData.ItemType.NonStackable || 
             count >= itemData.stackableLimit ||

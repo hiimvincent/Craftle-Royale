@@ -9,7 +9,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
     public Item item;
     public Vector2 pos;
 
-    private void AddItem(Item addedItem)
+    public void AddItem(Item addedItem)
     {
         addedItem.transform.SetParent(transform);
         addedItem.transform.SetAsLastSibling();
@@ -19,6 +19,14 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
     public void RemoveItem()
     {
         transform.DetachChildren();
+        item = null;
+    }
+
+    public void DestroyItem()
+    {
+        if (item == null) return;
+
+        Destroy(item.gameObject);
         item = null;
     }
 
@@ -80,7 +88,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 return;
             }
 
-            if (gm.curItem != null && cellCur.isSame(oldCur))
+            if (gm.curItem != null && cellCur.IsSame(oldCur))
             {
                 if (cellCur.Stack(gm.curItem, fromCanvas: true))
                     gm.curItem = null;
@@ -112,7 +120,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 {
                     SpawnItem(gm.curItem.itemData, gm.curItem.metadata, transform);
                     item.SetCount(1);
-                    gm.curItem.SetCount(gm.curItem.count - 1);
+                    gm.curItem.AddCount(-1);
                     return;
                 }
             }
@@ -137,7 +145,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 }
             }
 
-            if (cellCur.isSame(gm.curItem))
+            if (cellCur.IsSame(gm.curItem))
             {
                 if (cellCur.count >= cellCur.itemData.stackableLimit) return;
 
@@ -149,8 +157,8 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 }
                 else
                 {
-                    cellCur.SetCount(cellCur.count + 1);
-                    gm.curItem.SetCount(gm.curItem.count - 1);
+                    cellCur.AddCount(1);
+                    gm.curItem.AddCount(-1);
                     return;
                 }
             }
@@ -220,7 +228,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
                 if (rIndex == pos.x && cIndex == pos.y && isInventory == cur.isInventory)
                     return false;
                 
-                if (cur.item == null || !cur.item.isSame(cellCur)) continue;
+                if (cur.item == null || !cur.item.IsSame(cellCur)) continue;
 
                 if (cellCur.itemData.type == ItemData.ItemType.NonStackable ||
                     cur.item.count == cur.item.itemData.stackableLimit) continue;

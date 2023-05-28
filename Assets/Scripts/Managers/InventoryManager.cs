@@ -16,12 +16,13 @@ public class InventoryManager : MonoBehaviour
         GameManager gm = GameManager.GameManagerInstance;
         yield return new WaitUntil(() => gm.IsInitialized);
 
-        for (int i = 0; i < rows.Length; i++)
+        for (int i = 1; i < rows.Length; i++)
         {
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
                 rows[i].cells[j].pos = new Vector2(i, j);
                 rows[i].cells[j].SpawnItem(gm.itemDataManager.getItemDataById(280), 0, rows[i].cells[j].transform);
+                rows[i].cells[j].item.SetCount(10);
             }
         }
     }
