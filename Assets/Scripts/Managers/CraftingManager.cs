@@ -24,7 +24,7 @@ public class CraftingManager : MonoBehaviour
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
                 rows[i].cells[j].pos = new Vector2(i, j);
-                rows[i].cells[j].SpawnItem(gm.itemDataManager.getItemDataById(i+3), 0, rows[i].cells[j].transform);
+                rows[i].cells[j].SpawnItem(gm.itemDataManager.getItemDataById(5), i, rows[i].cells[j].transform);
                 rows[i].cells[j].item.SetCount(10);
             }
         }
@@ -41,11 +41,11 @@ public class CraftingManager : MonoBehaviour
                 Cell curCell = rows[row].cells[col];
                 if (curCell.item == null)
                 {
-                    res += "0000";
+                    res += "00000";
                 }
                 else
                 {
-                    res += curCell.item.itemData.id.ToString("000") + curCell.item.metadata.ToString();
+                    res += curCell.item.itemData.id.ToString("D3") + curCell.item.metadata.ToString("D2");
                 }
             }
         }
@@ -76,14 +76,15 @@ public class CraftingManager : MonoBehaviour
 
         if (xMin == -1) return null;
 
-        return new BoundingBox(xMin, yMin, xMax, yMax);
+        return new BoundingBox(xMax, yMax, xMin, yMin);
     }
 
     public void OnGridChange()
     {
         string prev = lastGridString;
-        BoundingBox curDim = GetBoundingBox(); 
-        if (getGridString(curDim) == prev) return;
+        BoundingBox curDim = GetBoundingBox();
+
+        if (curDim != null && getGridString(curDim) == prev) return;
 
         GameManager gm = GameManager.GameManagerInstance;
         craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(lastGridString, curDim));

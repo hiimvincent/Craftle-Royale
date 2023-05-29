@@ -5,6 +5,57 @@
             {
                "row": [
                   {
+                     "id": 265
+                  },
+                  {
+                     "id": 265
+                  },
+                  {
+                     "id": 265
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            }
+         ],
+         "dim": {
+            "bottomRightX" : 2,
+            "bottomRightY" : 2
+		 },
+         "result": {
+            "id": 257,
+            "quantity": 1
+         }
+      },
+      {
+         "grid": [
+            {
+               "row": [
+                  {
                      "id": 4
                   },
                   {
@@ -43,13 +94,201 @@
             }
          ],
          "dim": {
-            "topLeftX" : 0,
-            "topLeftY" : 0,
             "bottomRightX" : 2,
             "bottomRightY" : 2
 		 },
          "result": {
             "id": 274,
+            "quantity": 1
+         }
+      },
+      {
+         "grid": [
+            {
+               "row": [
+                  {
+                     "id": 5,
+                     "metadata": 99
+                  },
+                  {
+                     "id": 5,
+                     "metadata": 99
+                  },
+                  {
+                     "id": 5,
+                     "metadata": 99
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            }
+         ],
+         "dim": {
+            "bottomRightX" : 2,
+            "bottomRightY" : 2
+		 },
+         "result": {
+            "id": 270,
+            "quantity": 1
+         },
+         "specialIndices" : [0, 1, 2]
+      },
+      {
+         "grid": [
+            {
+               "row": [
+                  {
+                     "id": 264
+                  },
+                  {
+                     "id": 264
+                  },
+                  {
+                     "id": 264
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            }
+         ],
+         "dim": {
+            "bottomRightX" : 2,
+            "bottomRightY" : 2
+		 },
+         "result": {
+            "id": 278,
+            "quantity": 1
+         }
+      },
+      {
+         "grid": [
+            {
+               "row": [
+                  {
+                     "id": 266
+                  },
+                  {
+                     "id": 266
+                  },
+                  {
+                     "id": 266
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 0
+                  },
+                  {
+                     "id": 280
+                  },
+                  {
+                     "id": 0
+                  }
+               ]
+            }
+         ],
+         "dim": {
+            "bottomRightX" : 2,
+            "bottomRightY" : 2
+		 },
+         "result": {
+            "id": 285,
+            "quantity": 1
+         }
+      },
+      {
+         "grid": [
+            {
+               "row": [
+                  {
+                     "id": 4
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 280
+                  }
+               ]
+            },
+            {
+               "row": [
+                  {
+                     "id": 280
+                  }
+               ]
+            }
+         ],
+         "dim": {
+            "bottomRightX" : 2,
+            "bottomRightY" : 0
+		 },
+         "result": {
+            "id": 273,
             "quantity": 1
          }
       }

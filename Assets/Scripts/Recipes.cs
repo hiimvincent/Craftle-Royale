@@ -34,17 +34,17 @@ public class Result
 [System.Serializable]
 public class BoundingBox
 {
-    public int topLeftX;
-    public int topLeftY;
     public int bottomRightX;
     public int bottomRightY;
+    public int topLeftX;
+    public int topLeftY;
 
-    public BoundingBox(int topLeftX, int topLeftY, int bottomRightX, int bottomRightY)
+    public BoundingBox(int bottomRightX, int bottomRightY, int topLeftX = 0, int topLeftY = 0)
     {
-        this.topLeftX = topLeftX;
-        this.topLeftY = topLeftY;
         this.bottomRightX = bottomRightX;
         this.bottomRightY = bottomRightY;
+        this.topLeftX = topLeftX;
+        this.topLeftY = topLeftY;
     }
 }
 
@@ -65,12 +65,15 @@ public class Recipe
     public List<GridRow> grid;
     public BoundingBox dim;
     public Result result;
+    public List<int> specialIndices;
 
-    public Recipe(List<GridRow> grid, BoundingBox dim, Result result)
+    public Recipe(List<GridRow> grid, BoundingBox dim, Result result, List<int> specialIndices = null)
     {
         this.grid = grid;
         this.dim = dim;
         this.result = result;
+        this.specialIndices = specialIndices;
+
     }
 
     public string MakeGridString()
@@ -80,7 +83,21 @@ public class Recipe
         {
             for(int col = dim.topLeftY; col <= dim.bottomRightY; col++)
             {
-                res += grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString();
+                res += grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
+            }
+        }
+
+        return res;
+    }
+
+    public string MakeIdOnlyString()
+    {
+        string res = "";
+        for (int row = dim.topLeftX; row <= dim.bottomRightX; row++)
+        {
+            for (int col = dim.topLeftY; col <= dim.bottomRightY; col++)
+            {
+                res += grid[row].row[col].id.ToString("D3");
             }
         }
 

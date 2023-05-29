@@ -10,6 +10,8 @@ public class RecipeManager : MonoBehaviour
     Recipes recipes;
     Dictionary<string, Result>[,] careRecipeConversionGrid;
     Dictionary<string, Result> notCareRecipeConversion;
+    Dictionary<string, List<int>> careSpecialMetadata;
+
 
     public bool IsInitialized { get; private set; }
 
@@ -23,6 +25,7 @@ public class RecipeManager : MonoBehaviour
                 careRecipeConversionGrid[row, col] = new Dictionary<string, Result>();
             }
         }
+        careSpecialMetadata = new Dictionary<string, List<int>>();
         notCareRecipeConversion = new Dictionary<string, Result>();
 
         string jsonString = recipeJson.ToString();
@@ -30,7 +33,12 @@ public class RecipeManager : MonoBehaviour
 
         foreach (Recipe r in recipes.careRecipes)
         {
-            careRecipeConversionGrid[r.dim.bottomRightX - r.dim.topLeftX, r.dim.bottomRightY - r.dim.topLeftY].Add(r.MakeGridString(), r.result);
+            if (r.specialIndices != null)
+            {
+                careSpecialMetadata.Add(r.MakeIdOnlyString(), r.specialIndices);
+            }
+
+            careRecipeConversionGrid[r.dim.bottomRightX, r.dim.bottomRightY].Add(r.MakeGridString(), r.result);
         }
 
         foreach (Recipe r in recipes.notCareRecipes)
@@ -47,34 +55,98 @@ public class RecipeManager : MonoBehaviour
 
         Vector2Int boxSize = new Vector2Int(dim.bottomRightX - dim.topLeftX, dim.bottomRightY - dim.topLeftY);
 
-        if (!careRecipeConversionGrid[boxSize.x, boxSize.y].ContainsKey(craftGridString)) return null;
+        if (careRecipeConversionGrid[boxSize.x, boxSize.y].ContainsKey(craftGridString))
+        {
+            return careRecipeConversionGrid[boxSize.x, boxSize.y][craftGridString];
+        }
 
-        Result res = careRecipeConversionGrid[boxSize.x, boxSize.y][craftGridString];
+        string idOnly = ExtractIdString(craftGridString);
 
-        if (res != null) return res;
+        if (careSpecialMetadata.ContainsKey(idOnly))
+        {
+            string modGridString = ReplaceSpecialIndices(craftGridString, careSpecialMetadata[idOnly]);
 
-        res = notCareRecipeConversion[SortGridString(craftGridString)];
+            if (careRecipeConversionGrid[boxSize.x, boxSize.y].ContainsKey(modGridString))
+            {
+                return careRecipeConversionGrid[boxSize.x, boxSize.y][modGridString];
+            }
+        }
 
-        return res;
+        string sortedGridString = SortGridString(craftGridString);
+
+        if (notCareRecipeConversion.ContainsKey(sortedGridString))
+        {
+            return notCareRecipeConversion[sortedGridString];
+        }
+        
+        return null;
     }
 
     private string SortGridString(string gridString)
     {
         List<string> sections = new List<string>();
 
-        if (gridString.Length % 4 != 0)
+        if (gridString.Length % 5 != 0)
         {
             Debug.Log("Incorrect gridstring size");
             return null;
         }
 
-        int bounds = gridString.Length / 4;
+        int bounds = gridString.Length / 5;
+
         for(int i = 0; i < bounds; i++)
         {
-            sections.Add(gridString.Substring(i * 4, 4));
+            sections.Add(gridString.Substring(i * 5, 5));
         }
 
         sections.Sort();
         return String.Concat(sections);
+    }
+
+    private string ExtractIdString(string gridString)
+    {
+        string res = "";
+
+        if (gridString.Length % 5 != 0)
+        {
+            Debug.Log("Incorrect gridstring size");
+            return null;
+        }
+
+        int bounds = gridString.Length / 5;
+
+        for (int i = 0; i < bounds; i++)
+        {
+            res += gridString.Substring(i * 5, 3);
+        }
+
+        return res;
+    }
+
+    private string ReplaceSpecialIndices(string gridString, List<int> specialIndicies)
+    {
+        string res = "";
+
+        if (gridString.Length % 5 != 0)
+        {
+            Debug.Log("Incorrect gridstring size");
+            return null;
+        }
+
+        int bounds = gridString.Length / 5;
+
+        for (int i = 0; i < bounds; i++)
+        {
+            if (specialIndicies.Contains(i))
+            {
+                res += gridString.Substring(i * 5, 3) + "99";
+            }
+            else
+            {
+                res += gridString.Substring(i * 5, 5);
+            }
+        }
+
+        return res;
     }
 }
