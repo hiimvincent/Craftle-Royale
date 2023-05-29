@@ -30,13 +30,13 @@ public class CraftingManager : MonoBehaviour
         }
     }
 
-    public string getGridString()
+    public string getGridString(BoundingBox dim)
     {
         string res = "";
 
-        for (int row = 0; row < rows.Length; row++)
+        for (int row = dim.topLeftX; row <= dim.bottomRightX; row++)
         {
-            for (int col = 0; col < rows[row].cells.Length; col++)
+            for (int col = dim.topLeftY; col <= dim.bottomRightY; col++)
             {
                 Cell curCell = rows[row].cells[col];
                 if (curCell.item == null)
@@ -55,19 +55,45 @@ public class CraftingManager : MonoBehaviour
         return res;
     }
 
+    public BoundingBox GetBoundingBox()
+    {
+        int xMin = -1, xMax = -1, yMin = -1, yMax = -1;
+
+        for (int row = 0; row < rows.Length; row++)
+        {
+            for (int col = 0; col < rows[row].cells.Length; col++)
+            {
+                Cell curCell = rows[row].cells[col];
+
+                if (curCell.item == null) continue;
+
+                xMin = (xMin == -1) ? row : Mathf.Min(xMin, row);
+                yMin = (yMin == -1) ? col : Mathf.Min(yMin, col);
+                xMax = (xMax == -1) ? row : Mathf.Max(xMax, row);          
+                yMax = (yMax == -1) ? col : Mathf.Max(yMax, col);
+            }
+        }
+
+        if (xMin == -1) return null;
+
+        return new BoundingBox(xMin, yMin, xMax, yMax);
+    }
+
     public void OnGridChange()
     {
         string prev = lastGridString;
-        if (getGridString() == prev) return;
+        BoundingBox curDim = GetBoundingBox(); 
+        if (getGridString(curDim) == prev) return;
 
         GameManager gm = GameManager.GameManagerInstance;
-        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(lastGridString));
+        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(lastGridString, curDim));
     }
 
     public void OnDecrement()
     {
         GameManager gm = GameManager.GameManagerInstance;
-        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(getGridString()));
+        BoundingBox curDim = GetBoundingBox();
+        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(getGridString(curDim), curDim));
     }
 
     public void DecrementCraftingBoard()

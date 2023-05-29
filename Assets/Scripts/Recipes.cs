@@ -32,6 +32,23 @@ public class Result
 }
 
 [System.Serializable]
+public class BoundingBox
+{
+    public int topLeftX;
+    public int topLeftY;
+    public int bottomRightX;
+    public int bottomRightY;
+
+    public BoundingBox(int topLeftX, int topLeftY, int bottomRightX, int bottomRightY)
+    {
+        this.topLeftX = topLeftX;
+        this.topLeftY = topLeftY;
+        this.bottomRightX = bottomRightX;
+        this.bottomRightY = bottomRightY;
+    }
+}
+
+[System.Serializable]
 public class GridRow
 {
     public List<GridEntry> row;
@@ -46,20 +63,22 @@ public class GridRow
 public class Recipe
 {
     public List<GridRow> grid;
+    public BoundingBox dim;
     public Result result;
 
-    public Recipe(List<GridRow> grid, Result result)
+    public Recipe(List<GridRow> grid, BoundingBox dim, Result result)
     {
         this.grid = grid;
+        this.dim = dim;
         this.result = result;
     }
 
     public string MakeGridString()
     {
         string res = "";
-        for(int row = 0; row < grid.Count; row++)
+        for(int row = dim.topLeftX; row <= dim.bottomRightX; row++)
         {
-            for(int col = 0; col < grid[row].row.Count; col++)
+            for(int col = dim.topLeftY; col <= dim.bottomRightY; col++)
             {
                 res += grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString();
             }
@@ -72,10 +91,12 @@ public class Recipe
 [System.Serializable]
 public class Recipes
 {
-    public List<Recipe> care_recipes;
+    public List<Recipe> careRecipes;
+    public List<Recipe> notCareRecipes;
 
-    public Recipes(List<Recipe> care_recipes)
+    public Recipes(List<Recipe> careRecipes, List<Recipe> notCareRecipes)
     {
-        this.care_recipes = care_recipes;
+        this.careRecipes = careRecipes;
+        this.notCareRecipes = notCareRecipes;
     }
 }

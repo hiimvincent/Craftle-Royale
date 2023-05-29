@@ -1,5 +1,5 @@
 {
-   "care_recipes": [
+   "careRecipes": [
       {
          "grid": [
             {
@@ -42,6 +42,12 @@
                ]
             }
          ],
+         "dim": {
+            "topLeftX" : 0,
+            "topLeftY" : 0,
+            "bottomRightX" : 2,
+            "bottomRightY" : 2
+		 },
          "result": {
             "id": 274,
             "quantity": 1
