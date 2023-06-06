@@ -46,12 +46,10 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
 
     public void OnNewResult(Result result)
     {
-        if (result == null)
-        {
-            DestroyItem();
-            return;
-        }
+        DestroyItem();
 
+        if (result == null) return;
+        
         GameManager gm = GameManager.GameManagerInstance;
         ItemData itemData = gm.itemDataManager.getItemDataById(result.id);
         SpawnItem(itemData, result.metadata, result.quantity);

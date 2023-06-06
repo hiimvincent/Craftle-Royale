@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-
 
 [System.Serializable]
 public class GridEntry
@@ -29,6 +26,11 @@ public class Result
         this.metadata = metadata;
         this.quantity = quantity;
     }
+
+    public string GetResString()
+    {
+        return id.ToString("D3") + metadata.ToString("D2");
+    }
 }
 
 [System.Serializable]
@@ -45,6 +47,22 @@ public class BoundingBox
         this.bottomRightY = bottomRightY;
         this.topLeftX = topLeftX;
         this.topLeftY = topLeftY;
+    }
+}
+
+[System.Serializable]
+public class ItemIngredientTable
+{
+    public List<Dictionary<string, int>> table;
+
+    public ItemIngredientTable()
+    {
+        table = new List<Dictionary<string, int>>();
+    }
+
+    public ItemIngredientTable(Dictionary<string, int> firstEntry) : this()
+    {
+        table.Add(firstEntry);
     }
 }
 
@@ -79,9 +97,9 @@ public class Recipe
     public string MakeGridString()
     {
         string res = "";
-        for(int row = dim.topLeftX; row <= dim.bottomRightX; row++)
+        for (int row = dim.topLeftX; row <= dim.bottomRightX; row++)
         {
-            for(int col = dim.topLeftY; col <= dim.bottomRightY; col++)
+            for (int col = dim.topLeftY; col <= dim.bottomRightY; col++)
             {
                 res += grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
             }
@@ -102,6 +120,60 @@ public class Recipe
         }
 
         return res;
+    }
+
+    public Dictionary<string, int> GetIngredientDict() {
+        Dictionary<string, int> res = new Dictionary<string, int>();
+
+        for (int row = dim.topLeftX; row <= dim.bottomRightX; row++)
+        {
+            for (int col = dim.topLeftY; col <= dim.bottomRightY; col++)
+            {
+                if (grid[row].row[col].id == 0) continue;
+
+                string gridCellString = grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
+
+                if (res.ContainsKey(gridCellString))
+                {
+                    res[gridCellString] += 1;
+                }
+                else
+                {
+                    res[gridCellString] = 0;
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public (string, Dictionary<string, int>) GetCombinedRecipeData()
+    {
+        string gridString = "";
+        Dictionary<string, int> ingredients = new Dictionary<string, int>();
+
+        for (int row = dim.topLeftX; row <= dim.bottomRightX; row++)
+        {
+            for (int col = dim.topLeftY; col <= dim.bottomRightY; col++)
+            {
+                gridString += grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
+
+                if (grid[row].row[col].id == 0) continue;
+
+                string cellString = grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
+
+                if (ingredients.ContainsKey(cellString))
+                {
+                    ingredients[cellString] += 1;
+                }
+                else
+                {
+                    ingredients[cellString] = 0;
+                }
+            }
+        }
+
+        return (gridString, ingredients);
     }
 }
 

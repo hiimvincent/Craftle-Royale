@@ -7,11 +7,12 @@ using UnityEngine;
 public class RecipeManager : MonoBehaviour
 {
     [SerializeField] TextAsset recipeJson;
+
     Recipes recipes;
     Dictionary<string, Result>[,] careRecipeConversionGrid;
     Dictionary<string, Result> notCareRecipeConversion;
     Dictionary<string, List<int>> careSpecialMetadata;
-
+    Dictionary<string, ItemIngredientTable> itemIngredients;
 
     public bool IsInitialized { get; private set; }
 
@@ -27,18 +28,37 @@ public class RecipeManager : MonoBehaviour
         }
         careSpecialMetadata = new Dictionary<string, List<int>>();
         notCareRecipeConversion = new Dictionary<string, Result>();
+        itemIngredients = new Dictionary<string, ItemIngredientTable>();
 
         string jsonString = recipeJson.ToString();
         recipes = JsonUtility.FromJson<Recipes>(jsonString);
 
         foreach (Recipe r in recipes.careRecipes)
         {
-            if (r.specialIndices != null)
+            if (r.specialIndices.Count > 0)
             {
                 careSpecialMetadata.Add(r.MakeIdOnlyString(), r.specialIndices);
             }
 
-            careRecipeConversionGrid[r.dim.bottomRightX, r.dim.bottomRightY].Add(r.MakeGridString(), r.result);
+            string rGridString;
+            Dictionary<string, int> rIngredientList;
+
+            var rData = r.GetCombinedRecipeData();
+            rGridString = rData.Item1;
+            rIngredientList = rData.Item2;
+
+            careRecipeConversionGrid[r.dim.bottomRightX, r.dim.bottomRightY].Add(rGridString, r.result);
+
+            string resultString = r.result.GetResString();
+
+            if (itemIngredients.ContainsKey(resultString))
+            {
+                itemIngredients[resultString].table.Add(rIngredientList);
+            }
+            else
+            {
+                itemIngredients[resultString] = new ItemIngredientTable(rIngredientList);
+            }
         }
 
         foreach (Recipe r in recipes.notCareRecipes)
@@ -51,7 +71,7 @@ public class RecipeManager : MonoBehaviour
 
     public Result FindMatch(string craftGridString, BoundingBox dim)
     {
-        if (dim == null) return null;
+        if (dim == null || craftGridString == "") return null;
 
         Vector2Int boxSize = new Vector2Int(dim.bottomRightX - dim.topLeftX, dim.bottomRightY - dim.topLeftY);
 

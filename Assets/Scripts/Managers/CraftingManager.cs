@@ -24,7 +24,7 @@ public class CraftingManager : MonoBehaviour
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
                 rows[i].cells[j].pos = new Vector2(i, j);
-                rows[i].cells[j].SpawnItem(gm.itemDataManager.getItemDataById(5), i, rows[i].cells[j].transform);
+                rows[i].cells[j].SpawnItem(gm.itemDataManager.getItemDataById(17), i, rows[i].cells[j].transform);
                 rows[i].cells[j].item.SetCount(10);
             }
         }
@@ -33,6 +33,12 @@ public class CraftingManager : MonoBehaviour
     public string getGridString(BoundingBox dim)
     {
         string res = "";
+
+        if (dim == null)
+        {
+            lastGridString = res;
+            return res;
+        }
 
         for (int row = dim.topLeftX; row <= dim.bottomRightX; row++)
         {
@@ -81,13 +87,9 @@ public class CraftingManager : MonoBehaviour
 
     public void OnGridChange()
     {
-        string prev = lastGridString;
-        BoundingBox curDim = GetBoundingBox();
-
-        if (curDim != null && getGridString(curDim) == prev) return;
-
         GameManager gm = GameManager.GameManagerInstance;
-        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(lastGridString, curDim));
+        BoundingBox curDim = GetBoundingBox();
+        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(getGridString(curDim), curDim));
     }
 
     public void OnDecrement()
