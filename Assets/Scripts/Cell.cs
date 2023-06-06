@@ -55,12 +55,12 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
             OnShiftClick(eventData);
-            if (!isInventory) gm.cm.OnGridChange();
+            if (!isInventory) gm.craftManager.OnGridChange();
             return;
         }
 
         OnSimpleClick(eventData);
-        if (!isInventory) gm.cm.OnGridChange();
+        if (!isInventory) gm.craftManager.OnGridChange();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -180,11 +180,11 @@ public class Cell : MonoBehaviour, IPointerClickHandler, IDragHandler
 
         if (isInventory)
         {
-            Row[] craftRows = gm.cm.rows;
+            Row[] craftRows = gm.craftManager.rows;
             if (AttemptPlaceItem(craftRows)) return;
         }
 
-        Row[] invRows = gm.im.rows;
+        Row[] invRows = gm.invManager.rows;
         AttemptPlaceItem(invRows);
     }
 

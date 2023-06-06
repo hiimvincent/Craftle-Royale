@@ -12,6 +12,11 @@ public class ItemPoolItem
         this.id = id;
         this.metadata = metadata;
     }
+
+    public string GetResString()
+    {
+        return id.ToString("D3") + metadata.ToString("D2");
+    }
 }
 
 [System.Serializable]

@@ -69,6 +69,13 @@ public class RecipeManager : MonoBehaviour
         IsInitialized = true;
     }
 
+    public ItemIngredientTable GetIngredients(string itemString)
+    {
+        if (!itemIngredients.ContainsKey(itemString)) return null;
+
+        return itemIngredients[itemString];
+    }
+
     public Result FindMatch(string craftGridString, BoundingBox dim)
     {
         if (dim == null || craftGridString == "") return null;

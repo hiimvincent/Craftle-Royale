@@ -74,7 +74,7 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
             gm.curItem = item;
             RemoveItem();
             gm.curItem.transform.SetParent(gm.canvas.transform);
-            gm.cm.DecrementCraftingBoard();
+            gm.craftManager.DecrementCraftingBoard();
             return;
         }
 
@@ -87,7 +87,7 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
         Item prev = item;
         RemoveItem();
         gm.curItem.Stack(prev);
-        gm.cm.DecrementCraftingBoard();
+        gm.craftManager.DecrementCraftingBoard();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -98,7 +98,7 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
     public void OnShiftClick(PointerEventData eventData)
     {
         GameManager gm = GameManager.GameManagerInstance;
-        int maxPossibleTimes = gm.cm.GetNonZeroMin();
+        int maxPossibleTimes = gm.craftManager.GetNonZeroMin();
         int curCount = item.count;
 
         int timesPlaced = PlaceMax();
@@ -108,18 +108,18 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
             DestroyItem();
         }
 
-        gm.cm.DecrementByAmount(timesPlaced);
+        gm.craftManager.DecrementByAmount(timesPlaced);
     }
 
     private int PlaceMax()
     {
         GameManager gm = GameManager.GameManagerInstance;
-        int maxPossibleTimes = gm.cm.GetNonZeroMin();
+        int maxPossibleTimes = gm.craftManager.GetNonZeroMin();
         int placeableRem = maxPossibleTimes * item.count;
         int curUnitRem = item.count;
         List<Vector3Int> pending = new List<Vector3Int>();
 
-        Row[] invRows = gm.im.rows;
+        Row[] invRows = gm.invManager.rows;
 
         if (item.itemData.type == ItemData.ItemType.Stackable)
         {

@@ -144,6 +144,8 @@ public class Recipe
             }
         }
 
+        res["result"] = result.quantity;
+
         return res;
     }
 

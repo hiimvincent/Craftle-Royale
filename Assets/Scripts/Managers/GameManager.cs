@@ -9,12 +9,14 @@ public class GameManager : MonoBehaviour
         get; private set;
     }
 
-    public Canvas canvas;
-    public InventoryManager im;
-    public CraftingManager cm;
     public GameObject itemPrefab;
+    public Canvas canvas;
+
+    public InventoryManager invManager;
+    public CraftingManager craftManager;
     public ItemDataManager itemDataManager;
     public RecipeManager recipeManager;
+    public RoundManager roundManager;
 
     public Item curItem = null;
 
@@ -37,6 +39,8 @@ public class GameManager : MonoBehaviour
     {
         itemDataManager = GetComponent<ItemDataManager>();
         recipeManager = GetComponent<RecipeManager>();
+        roundManager = GetComponent<RoundManager>();
+
         yield return new WaitUntil(() => itemDataManager.IsInitialized && recipeManager.IsInitialized);
 
         IsInitialized = true;
