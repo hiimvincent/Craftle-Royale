@@ -10,8 +10,8 @@ public class RecipeManager : MonoBehaviour
 
     Recipes recipes;
     Dictionary<string, Result>[,] careRecipeConversionGrid;
+    Dictionary<string, List<int>>[,] careSpecialMetadata;
     Dictionary<string, Result> notCareRecipeConversion;
-    Dictionary<string, List<int>> careSpecialMetadata;
     Dictionary<string, ItemIngredientTable> itemIngredients;
 
     public bool IsInitialized { get; private set; }
@@ -19,14 +19,16 @@ public class RecipeManager : MonoBehaviour
     private void Awake()
     {
         careRecipeConversionGrid = new Dictionary<string, Result>[3, 3];
+        careSpecialMetadata = new Dictionary<string, List<int>>[3, 3];
         for (int row = 0; row < careRecipeConversionGrid.GetLength(0); row++)
         {
             for (int col = 0; col < careRecipeConversionGrid.GetLength(1); col++)
             {
                 careRecipeConversionGrid[row, col] = new Dictionary<string, Result>();
+                careSpecialMetadata[row, col] = new Dictionary<string, List<int>>();
             }
         }
-        careSpecialMetadata = new Dictionary<string, List<int>>();
+        
         notCareRecipeConversion = new Dictionary<string, Result>();
         itemIngredients = new Dictionary<string, ItemIngredientTable>();
 
@@ -37,7 +39,7 @@ public class RecipeManager : MonoBehaviour
         {
             if (r.specialIndices.Count > 0)
             {
-                careSpecialMetadata.Add(r.MakeIdOnlyString(), r.specialIndices);
+                careSpecialMetadata[r.dim.bottomRightX, r.dim.bottomRightY].Add(r.MakeIdOnlyString(), r.specialIndices);
             }
 
             string rGridString;
@@ -89,9 +91,9 @@ public class RecipeManager : MonoBehaviour
 
         string idOnly = ExtractIdString(craftGridString);
 
-        if (careSpecialMetadata.ContainsKey(idOnly))
+        if (careSpecialMetadata[boxSize.x, boxSize.y].ContainsKey(idOnly))
         {
-            string modGridString = ReplaceSpecialIndices(craftGridString, careSpecialMetadata[idOnly]);
+            string modGridString = ReplaceSpecialIndices(craftGridString, careSpecialMetadata[boxSize.x, boxSize.y][idOnly]);
 
             if (careRecipeConversionGrid[boxSize.x, boxSize.y].ContainsKey(modGridString))
             {

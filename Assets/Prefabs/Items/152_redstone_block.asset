@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58443074a2dc37b43a295356f866b40d, type: 3}
+  m_Name: 152_redstone_block
+  m_EditorClassIdentifier: 
+  id: 152
+  names:
+  - redstone_block
+  images:
+  - {fileID: 21300000, guid: acb914bd4f069dd49a232763c21b226b, type: 3}
+  type: 0
+  stackableLimit: 64
