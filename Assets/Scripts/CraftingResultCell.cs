@@ -51,7 +51,7 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
         if (result == null) return;
         
         GameManager gm = GameManager.GameManagerInstance;
-        ItemData itemData = gm.itemDataManager.getItemDataById(result.id);
+        ItemData itemData = gm.itemDataManager.GetItemDataById(result.id);
         SpawnItem(itemData, result.metadata, result.quantity);
     }
 

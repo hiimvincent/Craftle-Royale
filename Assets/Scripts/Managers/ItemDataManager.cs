@@ -20,8 +20,22 @@ public class ItemDataManager : MonoBehaviour
         IsInitialized = true;
     }
 
-    public ItemData getItemDataById(int id)
+    public ItemData GetItemDataById(int id)
     {
         return dataIdConversion[id];
+    }
+
+    public List<ItemData> GetRandomItemDatas(int size)
+    {
+        if (size <= 0) return null;
+
+        List<ItemData> res = new List<ItemData>();
+
+        for (int i = 0; i < size; i++)
+        {
+            res.Add(dataList[Random.Range(0, dataList.Length)]);
+        }
+
+        return res;
     }
 }

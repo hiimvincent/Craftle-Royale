@@ -24,8 +24,8 @@ public class CraftingManager : MonoBehaviour
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
                 rows[i].cells[j].pos = new Vector2(i, j);
-                rows[i].cells[j].SpawnItem(gm.itemDataManager.getItemDataById(17), i, rows[i].cells[j].transform);
-                rows[i].cells[j].item.SetCount(10);
+                //rows[i].cells[j].SpawnItem(gm.itemDataManager.getItemDataById(17), i, rows[i].cells[j].transform);
+                //rows[i].cells[j].item.SetCount(10);
             }
         }
     }

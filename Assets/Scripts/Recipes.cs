@@ -158,11 +158,10 @@ public class Recipe
         {
             for (int col = dim.topLeftY; col <= dim.bottomRightY; col++)
             {
-                gridString += grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
+                string cellString = grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
+                gridString += cellString;
 
                 if (grid[row].row[col].id == 0) continue;
-
-                string cellString = grid[row].row[col].id.ToString("D3") + grid[row].row[col].metadata.ToString("D2");
 
                 if (ingredients.ContainsKey(cellString))
                 {
@@ -170,7 +169,7 @@ public class Recipe
                 }
                 else
                 {
-                    ingredients[cellString] = 0;
+                    ingredients[cellString] = 1;
                 }
             }
         }

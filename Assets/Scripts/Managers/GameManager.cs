@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         recipeManager = GetComponent<RecipeManager>();
         roundManager = GetComponent<RoundManager>();
 
-        yield return new WaitUntil(() => itemDataManager.IsInitialized && recipeManager.IsInitialized);
+        yield return new WaitUntil(() => itemDataManager.IsInitialized && recipeManager.IsInitialized && roundManager.IsInitialized);
 
         IsInitialized = true;
     }
