@@ -75,6 +75,7 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
             RemoveItem();
             gm.curItem.transform.SetParent(gm.canvas.transform);
             gm.craftManager.DecrementCraftingBoard();
+            gm.roundManager.ProcessNewCraft();
             return;
         }
 
@@ -88,6 +89,7 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
         RemoveItem();
         gm.curItem.Stack(prev);
         gm.craftManager.DecrementCraftingBoard();
+        gm.roundManager.ProcessNewCraft();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -109,6 +111,7 @@ public class CraftingResultCell : MonoBehaviour, IPointerClickHandler, IDragHand
         }
 
         gm.craftManager.DecrementByAmount(timesPlaced);
+        gm.roundManager.ProcessNewCraft();
     }
 
     private int PlaceMax()

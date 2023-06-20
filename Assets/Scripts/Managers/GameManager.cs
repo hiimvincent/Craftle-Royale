@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public RoundManager roundManager;
 
     public Item curItem = null;
+    public Result curTarget;
 
     public bool IsInitialized { get; private set; }
 

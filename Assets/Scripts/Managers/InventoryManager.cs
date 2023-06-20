@@ -7,6 +7,10 @@ public class InventoryManager : MonoBehaviour
     public Row[] rows;
     public int[] testingItems = new int[] {4, 264, 265};
 
+    List<Result> originalInvCopy;
+    int[] originalIndicesCopy;
+
+
     private void Awake()
     {
         rows = GetComponentsInChildren<Row>();
@@ -30,9 +34,15 @@ public class InventoryManager : MonoBehaviour
         gm.roundManager.OnNewRound();
     }
 
-    public void SetInventory(List<Result> inv, int[] indices)
+    public void SetInventory(List<Result> inv, int[] indices, bool isReset = false)
     {
         GameManager gm = GameManager.GameManagerInstance;
+
+        if (!isReset)
+        {
+            originalInvCopy = InvDeepCopy(inv);
+            originalIndicesCopy = indices;
+        }
 
         for (int i = 0; i < rows.Length; i++)
         {
@@ -51,5 +61,57 @@ public class InventoryManager : MonoBehaviour
             rows[i].cells[j].SpawnItem(gm.itemDataManager.GetItemDataById(inv[curI].id), inv[curI].metadata, rows[i].cells[j].transform);
             rows[i].cells[j].item.SetCount(inv[curI].quantity);
         }
+    }
+
+    public void ResetInventory()
+    {
+        SetInventory(originalInvCopy, originalIndicesCopy, true);
+    }
+
+    private List<Result> InvDeepCopy(List<Result> inv)
+    {
+        if (inv == null) return null;
+
+        List<Result> res = new List<Result>();
+
+        foreach (Result cur in inv)
+        {
+            res.Add(new Result(cur.id, cur.metadata, cur.quantity));
+        }
+
+        return res;
+    }
+
+    public bool DetectWin(Result target)
+    {
+        GameManager gm = GameManager.GameManagerInstance;
+
+        int targetAmt = 0;
+
+        if (gm.curItem != null && gm.curItem.itemData.id == target.id && gm.curItem.metadata == target.metadata)
+        {
+            targetAmt += gm.curItem.count;
+
+            if (targetAmt >= target.quantity) return true;
+        }
+
+        for (int i = 0; i < rows.Length; i++)
+        {
+            for (int j = 0; j < rows[i].cells.Length; j++)
+            {
+                Item cur = rows[i].cells[j].item;
+
+                if (cur == null) continue;
+
+                if (cur.itemData.id == target.id && cur.metadata == target.metadata)
+                {
+                    targetAmt += cur.count;
+
+                    if (targetAmt >= target.quantity) return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

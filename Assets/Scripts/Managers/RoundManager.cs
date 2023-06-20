@@ -7,6 +7,7 @@ public class RoundManager : MonoBehaviour
 {
     [SerializeField] TextAsset roundDataJson;
     [SerializeField] TargetCell targetCell;
+    [SerializeField] GameObject victoryPopup;
 
     RoundData rd;
     Dictionary<string, int> curInventory;
@@ -33,6 +34,11 @@ public class RoundManager : MonoBehaviour
         IsInitialized = true;
     }
 
+    private void Start()
+    {
+        DisableVictoryPopup();
+    }
+
     public void OnNewRound()
     {
         ItemPoolItem target = SelectNewTarget();
@@ -53,10 +59,36 @@ public class RoundManager : MonoBehaviour
         SplitItemStacks();
         AddUnhelfulItems();
 
+        DisableVictoryPopup();
         GameManager gm = GameManager.GameManagerInstance;
         gm.invManager.SetInventory(formattedCurInventory, GetShuffledIndices());
 
         targetCell.SpawnItem(gm.itemDataManager.GetItemDataById(target.id), target.metadata, targetAmt);
+        gm.curTarget = new Result(target.id, target.metadata, targetAmt);
+    }
+
+    public void ProcessNewCraft()
+    {
+        GameManager gm = GameManager.GameManagerInstance;
+        if(gm.invManager.DetectWin(gm.curTarget))
+        {
+            Debug.Log("Win Detected");
+            EnableVictoryPopup();
+        }
+    }
+
+    public void EnableVictoryPopup()
+    {
+        Debug.Log(victoryPopup.activeSelf);
+        victoryPopup.SetActive(true);
+        Debug.Log(victoryPopup.activeSelf);
+    }
+
+    public void DisableVictoryPopup()
+    {
+        Debug.Log(victoryPopup.activeSelf);
+        victoryPopup.SetActive(false);
+        Debug.Log(victoryPopup.activeSelf);
     }
 
     private ItemPoolItem SelectNewTarget()
