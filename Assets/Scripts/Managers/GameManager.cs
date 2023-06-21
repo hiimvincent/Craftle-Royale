@@ -20,8 +20,11 @@ public class GameManager : MonoBehaviour
 
     public Item curItem = null;
     public Result curTarget;
+    public int curStreak;
+    public int maxStreak;
 
     public bool IsInitialized { get; private set; }
+    public bool WinState { get; set; }
 
     private void Awake()
     {
@@ -34,6 +37,14 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void DestroyCurItem()
+    {
+        if (curItem == null) return;
+
+        Destroy(curItem);
+        curItem = null;
     }
 
     private IEnumerator Start()
@@ -49,7 +60,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (curItem == null) return;
+        if (curItem == null || WinState) return;
 
         curItem.transform.position = Input.mousePosition;
     }

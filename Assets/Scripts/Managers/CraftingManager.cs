@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CraftingManager : MonoBehaviour
 {
-    public CraftingResultCell craftingCellResult;
+    public CraftingResultCell craftingResultCell;
     public Row[] rows;
 
     string lastGridString;
@@ -89,14 +89,14 @@ public class CraftingManager : MonoBehaviour
     {
         GameManager gm = GameManager.GameManagerInstance;
         BoundingBox curDim = GetBoundingBox();
-        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(getGridString(curDim), curDim));
+        craftingResultCell.OnNewResult(gm.recipeManager.FindMatch(getGridString(curDim), curDim));
     }
 
     public void OnDecrement()
     {
         GameManager gm = GameManager.GameManagerInstance;
         BoundingBox curDim = GetBoundingBox();
-        craftingCellResult.OnNewResult(gm.recipeManager.FindMatch(getGridString(curDim), curDim));
+        craftingResultCell.OnNewResult(gm.recipeManager.FindMatch(getGridString(curDim), curDim));
     }
 
     public void DecrementCraftingBoard()
@@ -173,5 +173,20 @@ public class CraftingManager : MonoBehaviour
         }
 
         OnDecrement();
+    }
+
+    public void ClearCraftingBoard()
+    {
+        for (int row = 0; row < rows.Length; row++)
+        {
+            for (int col = 0; col < rows[row].cells.Length; col++)
+            {
+                if (rows[row].cells[col].item == null) continue;
+
+                rows[row].cells[col].DestroyItem();
+            }
+        }
+
+        craftingResultCell.DestroyItem();
     }
 }

@@ -1390,7 +1390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 225c6e2ff3bd55049a8c493834600c3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  craftingCellResult: {fileID: 1592895679}
+  craftingResultCell: {fileID: 1592895679}
   rows: []
 --- !u!1 &615930304 stripped
 GameObject:
@@ -2888,6 +2888,8 @@ MonoBehaviour:
     id: 0
     metadata: 0
     quantity: 0
+  curStreak: 0
+  maxStreak: 0
 --- !u!4 &1230326790
 Transform:
   m_ObjectHideFlags: 0
@@ -3108,6 +3110,8 @@ MonoBehaviour:
   roundDataJson: {fileID: 4900000, guid: 4cb07abfa7b0cea449109eda5d3ea848, type: 3}
   targetCell: {fileID: 1220700412}
   victoryPopup: {fileID: 615930304}
+  curStreakText: {fileID: 669697330}
+  maxStreakText: {fileID: 545642436}
 --- !u!1001 &1238896447
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5182,7 +5186,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7236466901118605602, guid: 0b77549b255228846b9972c9afcb134b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7236466901118605603, guid: 0b77549b255228846b9972c9afcb134b, type: 3}
       propertyPath: m_Pivot.x
