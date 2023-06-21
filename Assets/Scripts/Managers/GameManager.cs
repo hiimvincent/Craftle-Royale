@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     }
 
     public GameObject itemPrefab;
+    public GameObject HomeScreen;
     public Canvas canvas;
 
     public InventoryManager invManager;
@@ -63,5 +64,21 @@ public class GameManager : MonoBehaviour
         if (curItem == null || WinState) return;
 
         curItem.transform.position = Input.mousePosition;
+    }
+
+    public void OnNewGame()
+    {
+        roundManager.OnNewRound();
+        HomeScreen.SetActive(false);
+    }
+
+    public void OnGotoHome()
+    {
+        HomeScreen.SetActive(true);
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

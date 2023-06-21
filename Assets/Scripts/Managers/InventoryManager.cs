@@ -26,12 +26,11 @@ public class InventoryManager : MonoBehaviour
             for (int j = 0; j < rows[i].cells.Length; j++)
             {
                 rows[i].cells[j].pos = new Vector2(i, j);
-                rows[i].cells[j].SpawnItem(gm.itemDataManager.GetItemDataById(testingItems[i]), 0, rows[i].cells[j].transform);
-                rows[i].cells[j].item.SetCount(10);
+                //rows[i].cells[j].SpawnItem(gm.itemDataManager.GetItemDataById(testingItems[i]), 0, rows[i].cells[j].transform);
+                //rows[i].cells[j].item.SetCount(10);
             }
         }
 
-        gm.roundManager.OnNewRound();
     }
 
     public void SetInventory(List<Result> inv, int[] indices, bool isReset = false)
