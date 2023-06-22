@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58443074a2dc37b43a295356f866b40d, type: 3}
-  m_Name: 022_lapis_block
+  m_Name: 041_gold_block
   m_EditorClassIdentifier: 
-  id: 22
+  id: 41
   names:
-  - lapis_block
+  - gold_block
   images:
-  - {fileID: 21300000, guid: 9b300fe1dadfd7c4e967f08f4139fde4, type: 3}
+  - {fileID: 21300000, guid: 50009f5d9f9419242a379522906bd8c9, type: 3}
   type: 0
   stackableLimit: 64

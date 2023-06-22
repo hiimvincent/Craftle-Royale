@@ -83,7 +83,11 @@ public class Item : MonoBehaviour
         if (!fromCanvas)
         {
             Cell par = other.GetComponentInParent<Cell>();
-            par.RemoveItem();
+
+            if (par != null)
+            {
+                par.RemoveItem();
+            }   
         }
 
         Destroy(other.gameObject);

@@ -45,11 +45,14 @@ public class RoundManager : MonoBehaviour
 
     public void OnNewRound()
     {
+        GameManager gm = GameManager.GameManagerInstance;
+
         ItemPoolItem target = SelectNewTarget();
         int targetAmt = Random.Range(1, TARGET_AMT_LIMIT);
         curInventory = new Dictionary<string, int>();
         formattedCurInventory = new List<Result>();
         curInventory[target.GetResString()] = targetAmt;
+        gm.curTarget = new Result(target.id, target.metadata, targetAmt);
         int revCraftingAmt = Random.Range(2, REV_CRAFT_LIMIT);
 
         ReverseCraftInventory(forceRev:true);
@@ -63,7 +66,6 @@ public class RoundManager : MonoBehaviour
         SplitItemStacks();
         AddUnhelfulItems();
         DisableVictoryPopup();
-        GameManager gm = GameManager.GameManagerInstance;
 
         targetCell.DestroyItem();
         gm.DestroyCurItem();
@@ -72,7 +74,6 @@ public class RoundManager : MonoBehaviour
 
         gm.invManager.SetInventory(formattedCurInventory, GetShuffledIndices());
         targetCell.SpawnItem(gm.itemDataManager.GetItemDataById(target.id), target.metadata, targetAmt);
-        gm.curTarget = new Result(target.id, target.metadata, targetAmt);
     }
 
     public void ProcessNewCraft()
@@ -171,7 +172,7 @@ public class RoundManager : MonoBehaviour
             int randMetadata = Random.Range(0, curData.names.Length);
             string curItemString = curData.id.ToString("D3") + randMetadata.ToString("D2");
 
-            if (curInventory.ContainsKey(curItemString)) continue;
+            if (curInventory.ContainsKey(curItemString) || (curData.id == gm.curTarget.id && randMetadata == gm.curTarget.metadata)) continue;
 
             int randAmt = curData.type == ItemData.ItemType.NonStackable ? 1 : Random.Range(U_ITEM_STACK_MIN, U_ITEM_STACK_MAX + 1);
             formattedCurInventory.Add(new Result(curData.id, randMetadata, randAmt));

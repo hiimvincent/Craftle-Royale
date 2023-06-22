@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject itemPrefab;
     public GameObject HomeScreen;
+    public GameObject GotoHomeCofirmation;
     public Canvas canvas;
 
     public InventoryManager invManager;
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
     {
         if (curItem == null) return;
 
-        Destroy(curItem);
+        Destroy(curItem.gameObject);
         curItem = null;
     }
 
@@ -74,6 +75,7 @@ public class GameManager : MonoBehaviour
 
     public void OnGotoHome()
     {
+        GotoHomeCofirmation.SetActive(false);
         HomeScreen.SetActive(true);
     }
 
