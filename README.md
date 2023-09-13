@@ -1,5 +1,7 @@
 # Craftle-Royale
 
+![Screenshot 1](images/craftle_ss1.png)
+
 Craftle Royale is a wordle-style minigame where players test their knowledge of Minecraft recipes though randomized crafting puzzles. 
 
 ## Running
